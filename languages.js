@@ -133,7 +133,7 @@ function getCode(desiredLang) {
             return false;
         }
 
-        return langs[key].toLowerCase() === desiredLang.toLowerCase();
+        return langs[key].toLowerCase() === desiredLang.toLowerCase() || key.toLowerCase() === desiredLang.toLowerCase();
     });
 
     return keys[0] || false;

@@ -32,12 +32,12 @@ function translate(text, opts, gotopts) {
 
     opts.from = opts.from || 'auto';
     opts.to = opts.to || 'en';
-    opts.tld = opts.tld || 'com';
+    opts.url = opts.url || 'https://translate.google.cn';
 
     opts.from = languages.getCode(opts.from);
     opts.to = languages.getCode(opts.to);
 
-    var url = 'https://translate.google.' + opts.tld;
+    var url = opts.url;
     return got(url, gotopts).then(function (res) {
         var data = {
             'rpcids': 'MkEWBc',
@@ -64,6 +64,7 @@ function translate(text, opts, gotopts) {
             var result = {
                 text: '',
                 pronunciation: '',
+                candidates: [],
                 from: {
                     language: {
                         didYouMean: false,
@@ -102,6 +103,7 @@ function translate(text, opts, gotopts) {
                     .join(' ');
             }
             result.pronunciation = json[1][0][0][1];
+            try { result.candidates = json[1][0][0][5][0][4].map(a => a[0]) } catch(e) {}
 
             // From language
             if (json[0] && json[0][1] && json[0][1][1]) {

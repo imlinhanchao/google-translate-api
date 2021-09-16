@@ -1,8 +1,8 @@
 # google-translate-api
-[![Actions Status](https://github.com/vitalets/google-translate-api/workflows/autotests/badge.svg)](https://github.com/vitalets/google-translate-api/actions)
-[![NPM version](https://img.shields.io/npm/v/@vitalets/google-translate-api.svg)](https://www.npmjs.com/package/@vitalets/google-translate-api)
+[![Actions Status](https://github.com/imlinhanchao/google-translate-api/workflows/autotests/badge.svg)](https://github.com/imlinhanchao/google-translate-api/actions)
+[![NPM version](https://img.shields.io/npm/v/@imlinhanchao/google-translate-api.svg)](https://www.npmjs.com/package/@imlinhanchao/google-translate-api)
 [![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/sindresorhus/xo)
-[![Coverage Status](https://coveralls.io/repos/github/vitalets/google-translate-api/badge.svg?branch=master)](https://coveralls.io/github/vitalets/google-translate-api?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/imlinhanchao/google-translate-api/badge.svg?branch=master)](https://coveralls.io/github/imlinhanchao/google-translate-api?branch=master)
 
 A **free** and **unlimited** API for Google Translate :dollar: :no_entry_sign: for Node.js.
 
@@ -14,23 +14,16 @@ A **free** and **unlimited** API for Google Translate :dollar: :no_entry_sign: f
 - Fast and reliable – it uses the same servers that [translate.google.com](https://translate.google.com) uses
 
 ## Why this fork?
-This fork of original [matheuss/google-translate-api](https://github.com/matheuss/google-translate-api) contains several improvements:
+This fork of original [vitalets/google-translate-api/](https://github.com/vitalets/google-translate-api/) contains several improvements:
 
-- New option `client="t|gtx"`. Setting `client="gtx"` seems to work even with outdated token, see [this discussion](https://github.com/matheuss/google-translate-api/issues/79#issuecomment-425679193) for details
-- Fixed extraction of TKK ceed from current `https://translate.google.com` sources (via [@vitalets/google-translate-token](https://github.com/vitalets/google-translate-token))
-- Removed unsecure `unsafe-eval` dependency (See [#2](https://github.com/vitalets/google-translate-api/pull/2))
-- Added [daily CI tests](https://travis-ci.org/vitalets/google-translate-api/builds) to get notified if Google API changes
-- Added support for custom `tld` (especially to support `translate.google.cn`, see [#7](https://github.com/vitalets/google-translate-api/pull/7))
-- Added support for outputting pronunciation (see [#17](https://github.com/vitalets/google-translate-api/pull/17))
-- Added support for custom [got](https://github.com/sindresorhus/got) options. It allows to use proxy and bypass request limits (see [#25](https://github.com/vitalets/google-translate-api/pull/25))
-- Added support for language extensions from outside of the API (see [#18](https://github.com/vitalets/google-translate-api/pull/18))
-- Added TypeScript definitions (see [#50](https://github.com/vitalets/google-translate-api/pull/50), thanks to [@olavoparno](https://github.com/olavoparno))
-- Migrated to Google's latest batch-style RPC API (see [#60](https://github.com/vitalets/google-translate-api/pull/60), thanks to [@vkedwardli](https://github.com/vkedwardli))
+- Change TDL to URL, can define full request URL.
+- Add candidates result.
+- Update getCode in `language.js`.
 
 ## Install 
 
 ```
-npm install @vitalets/google-translate-api
+npm install @imlinhanchao/google-translate-api
 ```
 
 ## Usage
@@ -38,7 +31,7 @@ npm install @vitalets/google-translate-api
 From automatic language detection to English:
 
 ```js
-const translate = require('@vitalets/google-translate-api');
+const translate = require('@imlinhanchao/google-translate-api');
 
 translate('Ik spreek Engels', {to: 'en'}).then(res => {
     console.log(res.text);
@@ -51,7 +44,7 @@ translate('Ik spreek Engels', {to: 'en'}).then(res => {
 ```
 
 > Please note that maximum text length for single translation call is **5000** characters. 
-> In case of longer text you should split it on chunks, see [#20](https://github.com/vitalets/google-translate-api/issues/20).
+> In case of longer text you should split it on chunks, see [#20](https://github.com/imlinhanchao/google-translate-api/issues/20).
 
 From English to Dutch with a typo:
 
@@ -140,12 +133,12 @@ Type: `object`
 ##### from
 Type: `string` Default: `auto`
 
-The `text` language. Must be `auto` or one of the codes/names (not case sensitive) contained in [languages.js](https://github.com/vitalets/google-translate-api/blob/master/languages.js)
+The `text` language. Must be `auto` or one of the codes/names (not case sensitive) contained in [languages.js](https://github.com/imlinhanchao/google-translate-api/blob/master/languages.js)
 
 ##### to
 Type: `string` Default: `en`
 
-The language in which the text should be translated. Must be one of the codes/names (case sensitive!) contained in [languages.js](https://github.com/vitalets/google-translate-api/blob/master/languages.js).
+The language in which the text should be translated. Must be one of the codes/names (case sensitive!) contained in [languages.js](https://github.com/imlinhanchao/google-translate-api/blob/master/languages.js).
 
 ##### raw
 Type: `boolean` Default: `false`
@@ -157,10 +150,10 @@ Type: `string` Default: `"t"`
 
 Query parameter `client` used in API calls. Can be `t|gtx`.
 
-##### tld
-Type: `string` Default: `"com"`
+##### url
+Type: `string` Default: `"https://translate.google.cn"`
 
-TLD for Google translate host to be used in API calls: `https://translate.google.{tld}`.
+URL for Google translate host to be used in API calls.
 
 #### gotOptions
 Type: `object`
@@ -169,10 +162,12 @@ The got options: https://github.com/sindresorhus/got#options
 
 ### Returns an `object`:
 - `text` *(string)* – The translated text.
+- `pronunciation` *(string)* – The pronunciation of text.
+- `candidates` *(array)* – The translated candidates result.
 - `from` *(object)*
   - `language` *(object)*
     - `didYouMean` *(boolean)* - `true` if the API suggest a correction in the source language
-    - `iso` *(string)* - The [code of the language](https://github.com/vitalets/google-translate-api/blob/master/languages.js) that the API has recognized in the `text`
+    - `iso` *(string)* - The [code of the language](https://github.com/imlinhanchao/google-translate-api/blob/master/languages.js) that the API has recognized in the `text`
   - `text` *(object)*
     - `autoCorrected` *(boolean)* – `true` if the API has auto corrected the `text`
     - `value` *(string)* – The auto corrected `text` or the `text` with suggested corrections
@@ -193,4 +188,4 @@ Otherwise, it will be an empty `string` (`''`).
 
 ## License
 
-MIT © [Matheus Fernandes](http://matheus.top), forked and maintained by [Vitaliy Potapov](https://github.com/vitalets).
+MIT © [Matheus Fernandes](http://matheus.top), forked from [Vitaliy Potapov](https://github.com/vitalets) and maintained by [Hancel Lin](https://github.com/imlinhanchao).

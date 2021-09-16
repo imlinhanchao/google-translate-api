@@ -1,6 +1,6 @@
 {
-  "name": "@vitalets/google-translate-api",
-  "version": "7.0.0",
+  "name": "@imlinhanchao/google-translate-api",
+  "version": "8.0.0",
   "description": "A free and unlimited API for Google Translate",
   "main": "index.js",
   "scripts": {
@@ -19,7 +19,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/vitalets/google-translate-api.git"
+    "url": "https://github.com/imlinhanchao/google-translate-api.git"
   },
   "keywords": [
     "translate",
@@ -37,9 +37,9 @@
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/vitalets/google-translate-api/issues"
+    "url": "https://github.com/imlinhanchao/google-translate-api/issues"
   },
-  "homepage": "https://github.com/vitalets/google-translate-api#readme",
+  "homepage": "https://github.com/imlinhanchao/google-translate-api#readme",
   "dependencies": {
     "configstore": "^5.0.1",
     "got": "^9.6.0"

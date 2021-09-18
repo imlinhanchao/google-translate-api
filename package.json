@@ -1,6 +1,6 @@
 {
   "name": "@imlinhanchao/google-translate-api",
-  "version": "8.0.0",
+  "version": "8.0.1",
   "description": "A free and unlimited API for Google Translate",
   "main": "index.js",
   "scripts": {

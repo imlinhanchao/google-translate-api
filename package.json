@@ -11,12 +11,6 @@
     "release-patch": "VER=patch npm run release",
     "release-minor": "VER=minor npm run release"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "xo",
-      "pre-push": "npm test"
-    }
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/imlinhanchao/google-translate-api.git"

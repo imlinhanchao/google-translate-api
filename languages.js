@@ -112,7 +112,12 @@ var langs = {
     'xh': 'Xhosa',
     'yi': 'Yiddish',
     'yo': 'Yoruba',
-    'zu': 'Zulu'
+    'zu': 'Zulu',
+    'or': 'Odia (Oriya)',
+    'rw': 'Kinyarwanda',
+    'tk': 'Turkmen',
+    'tt': 'Tatar',
+    'ug': 'Uyghur'
 };
 /**
  * Returns the ISO 639-1 code of the desiredLang – if it is supported by Google Translate

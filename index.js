@@ -32,24 +32,88 @@ function translate(text, opts, gotopts) {
 
     opts.from = opts.from || 'auto';
     opts.to = opts.to || 'en';
-    opts.url = opts.url || 'https://translate.google.cn';
+
+    if (opts.useGoogleAPIs) {
+        let key = opts.googleAPIsKey || "";
+        opts.url = "https://translation.googleapis.com/language/translate/v2?key=" + key;
+    }
+    else {
+        opts.url = opts.url || 'https://translate.google.cn';
+    }
 
     opts.from = languages.getCode(opts.from);
     opts.to = languages.getCode(opts.to);
 
     var url = opts.url;
-    return got(url, gotopts).then(function (res) {
-        var data = {
-            'rpcids': 'MkEWBc',
-            'f.sid': extract('FdrFJe', res),
-            'bl': extract('cfb2h', res),
-            'hl': 'en-US',
-            'soc-app': 1,
-            'soc-platform': 1,
-            'soc-device': 1,
-            '_reqid': Math.floor(1000 + (Math.random() * 9000)),
-            'rt': 'c'
-        };
+    if (opts.useGoogleAPIs) {
+        let payload = {
+            "q": text,
+            "target": opts.to,
+            "format": "text"
+        }
+
+        gotopts.body = JSON.stringify(payload);
+        gotopts.headers = gotopts.headers || {};
+        gotopts.headers['content-type'] = 'application/json;charset=UTF-8';
+
+        return got.post(url, gotopts).then(function (res) {
+            var result = {
+                text: '',
+                pronunciation: '',
+                candidates: [],
+                from: {
+                    language: {
+                        didYouMean: false,
+                        iso: ''
+                    },
+                    text: {
+                        autoCorrected: false,
+                        value: '',
+                        didYouMean: false
+                    }
+                },
+                raw: ''
+            };
+
+            let resJson = {};
+            try {
+                resJson = JSON.parse(res.body);
+            } catch (e) {
+                return result;
+            }
+
+            if (!resJson || !resJson.data || !resJson.data.translations || 0 == resJson.data.translations[0]) {
+                return result;
+            }
+
+            result.text = resJson.data.translations[0].translatedText || '';
+            result.from.language.iso = opts.from;
+            result.from.text.value = text;
+            result.raw = resJson;
+
+            return result;
+        }).catch(function (err) {
+            err.message += `\nUrl: ${url}\nPayload: ${JSON.stringify(payload)}`;
+            if (err.statusCode !== undefined && err.statusCode !== 200) {
+                err.code = 'BAD_REQUEST';
+            } else {
+                err.code = 'BAD_NETWORK';
+            }
+            throw err;
+        });
+    } else {
+        return got(url, gotopts).then(function (res) {
+            var data = {
+                'rpcids': 'MkEWBc',
+                'f.sid': extract('FdrFJe', res),
+                'bl': extract('cfb2h', res),
+                'hl': 'en-US',
+                'soc-app': 1,
+                'soc-platform': 1,
+                'soc-device': 1,
+                '_reqid': Math.floor(1000 + (Math.random() * 9000)),
+                'rt': 'c'
+            };
 
         return data;
     }).then(function (data) {

@@ -33,8 +33,8 @@ function translate(text, opts, gotopts) {
     opts.from = opts.from || 'auto';
     opts.to = opts.to || 'en';
 
-    if (opts.useGoogleAPIs) {
-        let key = opts.googleAPIsKey || "";
+    if (opts.useGoogleCloudApis) {
+        let key = opts.googleCloudAPIsKey || "";
         opts.url = "https://translation.googleapis.com/language/translate/v2?key=" + key;
     }
     else {
@@ -45,7 +45,7 @@ function translate(text, opts, gotopts) {
     opts.to = languages.getCode(opts.to);
 
     var url = opts.url;
-    if (opts.useGoogleAPIs) {
+    if (opts.useGoogleCloudApis) {
         let payload = {
             "q": text,
             "target": opts.to,
